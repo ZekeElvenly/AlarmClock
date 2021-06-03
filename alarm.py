@@ -5,10 +5,11 @@ import datetime
 import tkinter
 from pygame import mixer
 
+
+
 def winAlarm():
-    global winAlarm, inHrs, inMin, inSec
     winAlarm = tkinter.Tk()
-    winAlarm.title('TechVidvan Alarm')  
+    winAlarm.title('Set Alarm')  
     hrs = StringVar()
     mins = StringVar()
     secs = StringVar()
@@ -19,17 +20,16 @@ def winAlarm():
     inMin.grid(row=2, column=2)
     inSec = Entry(winAlarm, textvariable=secs, width=5, font = ('arial', 20, 'bold'))
     inSec.grid(row=2, column=3)
-    Button(winAlarm, text="Set Alarm", command=setalarm, bg="DodgerBlue2", fg="white", font = ('arial', 20, 'bold')).grid(row=4, columnspan=3)
+    Button(winAlarm, text="Set Alarm", command=lambda : setalarm(inHrs, inMin ,inSec), bg="DodgerBlue2", fg="white", font = ('arial', 20, 'bold')).grid(row=4, columnspan=3)
     timeleft = Label(winAlarm, font = ('arial', 20, 'bold'))
     timeleft.grid()
 
 
-def setalarm():
-    alarmtime=f"{inHrs.get()}:{inMin.get()}:{inSec.get()}"
+def setalarm(hrs, mins, secs):
+    alarmtime=f"{hrs.get()}:{mins.get()}:{secs.get()}"
     print(alarmtime) 
     if(alarmtime!="::"):
         alarmclock(alarmtime)
-
 
 def alarmclock(alarmtime):
     while True:

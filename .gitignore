@@ -1,2 +1,4 @@
-'clock copas.py'
-./.vscode/
+*.wav
+clock copas.py
+.vscode/
+test.py

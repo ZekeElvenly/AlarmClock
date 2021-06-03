@@ -1,13 +1,10 @@
-import datetime
 import tkinter as Tkinter
 
 import math
 import time
 from tkinter import *
 import tkinter
-
-from pygame import mixer
-#import alarm
+import alarm
 
 class main(Tkinter.Tk):
     def __init__(self):
@@ -27,7 +24,7 @@ class main(Tkinter.Tk):
         #self.overrideredirect(1)
 
         self.right_click = tkinter.Menu(self, tearoff=0)
-        self.right_click.add_command(label="Set Alarm", command= winAlarm)
+        self.right_click.add_command(label="Set Alarm", command= alarm.winAlarm)
         self.right_click.add_command(label="Quit", command=self.destroy)
         self.bind("<Button-3>", self.right_click_menu)
 
@@ -68,44 +65,6 @@ class main(Tkinter.Tk):
             self.canvas.coords(self.stick[n], tuple(cr))
         return
 
-
-def winAlarm():
-    global winAlarm, inHrs, inMin, inSec
-    winAlarm = tkinter.Tk()
-    winAlarm.title('Set Alarm')  
-    hrs = StringVar()
-    mins = StringVar()
-    secs = StringVar()
-    Label(winAlarm, font = ('arial', 20, 'bold'), text="Take a Short Nap!").grid(row=1, columnspan=3)
-    inHrs = Entry(winAlarm, textvariable=hrs, width=5, font = ('arial', 20, 'bold'))
-    inHrs.grid(row=2, column=1)
-    inMin = Entry(winAlarm, textvariable=mins, width=5, font = ('arial', 20, 'bold'))
-    inMin.grid(row=2, column=2)
-    inSec = Entry(winAlarm, textvariable=secs, width=5, font = ('arial', 20, 'bold'))
-    inSec.grid(row=2, column=3)
-    Button(winAlarm, text="Set Alarm", command=setalarm, bg="DodgerBlue2", fg="white", font = ('arial', 20, 'bold')).grid(row=4, columnspan=3)
-    timeleft = Label(winAlarm, font = ('arial', 20, 'bold'))
-    timeleft.grid()
-
-
-def setalarm():
-    alarmtime=f"{inHrs.get()}:{inMin.get()}:{inSec.get()}"
-    print(alarmtime) 
-    if(alarmtime!="::"):
-        alarmclock(alarmtime)
-
-def alarmclock(alarmtime):
-    while True:
-        time.sleep(1)
-        time_now=datetime.datetime.now().strftime("%H:%M:%S")
-        print(time_now)
-        if time_now==alarmtime:
-            Label(winAlarm, font = ('arial', 20, 'bold'), text="Wake UP!", bg="DodgerBlue2", fg="white").grid(row=5, columnspan=3)
-            print("Wake Up!")
-            mixer.init()
-            mixer.music.load(r'sound.wav')
-            mixer.music.play()
-            break
 
 
 
