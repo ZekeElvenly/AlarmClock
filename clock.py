@@ -1,14 +1,15 @@
 import tkinter as Tkinter
-
 import math
 import time
+import os
+import datetime
 from tkinter import *
-import tkinter
-import alarm
+import tkinter as tk
+from playsound import playsound
 
-class main(Tkinter.Tk):
+class main(tk.Tk):
     def __init__(self):
-        Tkinter.Tk.__init__(self)
+        super().__init__()
         self.x = 70
         self.y = 70
         self.window_management()
@@ -16,6 +17,10 @@ class main(Tkinter.Tk):
         self.create_canvas_for_shapes()
         self.creating_background()
         self.creating_stick()
+        while True:
+            self.update()
+            self.update_class()
+            self.update_idletasks()
 
     def window_management(self):
         self.geometry('140x140')
@@ -23,11 +28,14 @@ class main(Tkinter.Tk):
         self.title("Alarm Clock")
         #self.overrideredirect(1)
 
-        self.right_click = tkinter.Menu(self, tearoff=0)
-        self.right_click.add_command(label="Set Alarm", command= alarm.winAlarm)
+        self.right_click = tk.Menu(self, tearoff=0)
+        self.right_click.add_command(label="Set Alarm", command=self.open_alarm)
         self.right_click.add_command(label="Quit", command=self.destroy)
         self.bind("<Button-3>", self.right_click_menu)
 
+    def open_alarm(self):
+        window = Window(self)
+        window.grab_set()
 
     def creating_background(self):
         self.image = Tkinter.PhotoImage(file='clock.gif')
@@ -66,13 +74,54 @@ class main(Tkinter.Tk):
         return
 
 
+class Window(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.title('Alarm Clock')
+        self.wm_resizable(0,0)
+        self.winAlarm()
+
+    def winAlarm(self,):
+        hrs = StringVar()
+        mins = StringVar()
+        secs = StringVar()
+        Label(self, font = ('arial', 14, 'bold'), text="Take a Short Nap!").grid(row=1, column=2)
+        inHrs = Spinbox(self, textvariable=hrs,from_=0,to=23, width=3, font = ('arial', 14, 'bold'))
+        inHrs.grid(row=2, column=1)
+        inMin = Spinbox(self, textvariable=mins, from_=0, to=59, width=3, font = ('arial', 14, 'bold'))
+        inMin.grid(row=2, column=2)
+        inSec = Spinbox(self, textvariable=secs, from_=0, to=59, width=3, font = ('arial', 14, 'bold'))
+        inSec.grid(row=2, column=3)
+        Button(self, text="Set Alarm", command=lambda : self.setalarm(inHrs, inMin ,inSec), bg="DodgerBlue2", fg="white", font = ('arial', 14)).grid(row=3, column=2)
+        #timeleft = Label(frame, font = ('arial', 14, 'bold'))
+    #timeleft.grid(row=4, column=3)
 
 
+    def setalarm(self, hrs, mins, secs):
+        alarmtime=str(f"{hrs.get()}:{mins.get()}:{secs.get()}")
+        settime = time.strptime(alarmtime, "%H:%M:%S")
+        parsetime = time.strftime("%H:%M:%S", settime)
+        #print(alarmtime)
+        print(parsetime)
+        if(parsetime!="::"):
+            self.alarmclock(parsetime)
+
+    def alarmclock(self, alarmtime):
+        n = os.fork()
+        alarm_set = True
+        if n > 0:
+            while alarm_set == True:
+                time.sleep(1)
+                time_now=datetime.datetime.now().strftime("%H:%M:%S")
+                print(time_now)
+                if time_now==alarmtime:
+                    self.playAlarm()
+                    alarm_set = False
+
+    def playAlarm(self):
+        print("Wake Up!")
+        playsound('Bangun, Bangsat.mp3')
 
 if __name__ == '__main__':
-    root = main()
-
-    while True:
-        root.update()
-        root.update_idletasks()
-        root.update_class()
+    main().mainloop()
