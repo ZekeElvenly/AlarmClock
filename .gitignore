@@ -4,3 +4,4 @@ clock copas.py
 .vscode/
 __pycache__/
 test.py
+alarm.py

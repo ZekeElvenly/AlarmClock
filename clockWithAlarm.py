@@ -1,7 +1,7 @@
 import tkinter as Tkinter
+import multiprocessing
 import math
 import time
-import os
 import datetime
 from tkinter import *
 import tkinter as tk
@@ -82,7 +82,7 @@ class Window(tk.Toplevel):
         self.wm_resizable(0,0)
         self.winAlarm()
 
-    def winAlarm(self,):
+    def winAlarm(self):
         hrs = StringVar()
         mins = StringVar()
         secs = StringVar()
@@ -102,22 +102,21 @@ class Window(tk.Toplevel):
         alarmtime=str(f"{hrs.get()}:{mins.get()}:{secs.get()}")
         settime = time.strptime(alarmtime, "%H:%M:%S")
         parsetime = time.strftime("%H:%M:%S", settime)
+        alarmProcess = multiprocessing.Process(target=lambda : self.alarmclock(parsetime))
         #print(alarmtime)
         print(parsetime)
+        
         if(parsetime!="::"):
-            self.alarmclock(parsetime)
+            alarmProcess.start()
 
     def alarmclock(self, alarmtime):
-        n = os.fork()
-        alarm_set = True
-        if n > 0:
-            while alarm_set == True:
-                time.sleep(1)
-                time_now=datetime.datetime.now().strftime("%H:%M:%S")
-                print(time_now)
-                if time_now==alarmtime:
-                    self.playAlarm()
-                    alarm_set = False
+        while True:
+            time.sleep(1)
+            time_now=datetime.datetime.now().strftime("%H:%M:%S")
+            print(time_now)
+            if time_now==alarmtime:
+                self.playAlarm()
+                break
 
     def playAlarm(self):
         print("Wake Up!")
