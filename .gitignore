@@ -1,5 +1,6 @@
 *.wav
 *.mp3
+*.gif
 clock copas.py
 .vscode/
 __pycache__/
