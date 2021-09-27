@@ -105,7 +105,6 @@ class Window(tk.Toplevel):
         alarmProcess = multiprocessing.Process(target=lambda : self.alarmclock(parsetime))
         #print(alarmtime)
         print(parsetime)
-        
         if(parsetime!="::"):
             alarmProcess.start()
 
