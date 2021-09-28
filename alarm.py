@@ -16,37 +16,38 @@ class mainWindow(tk.Tk):
         self.winAlarm()
 
     def winAlarm(self):
-        #self.bind('<Return>', lambda e: self.setalarm(inHrs, inMin, inSec))
+        self.bind('<Return>', lambda e: self.setalarm(self.inHrs, self.inMin, self.inSec))
         hrs = StringVar()
         mins = StringVar()
         secs = StringVar()
         self.setTime = Label(self, font = ('arial', 14, 'bold'), text="Take a Short Nap!")
         self.setTime.grid(row=1, column=2)
-        inHrs = Spinbox(self, textvariable=hrs,from_=0,to=23, width=3, font = ('arial', 14, 'bold'))
-        inHrs.grid(row=2, column=1)
-        inMin = Spinbox(self, textvariable=mins, from_=0, to=59, width=3, font = ('arial', 14, 'bold'))
-        inMin.grid(row=2, column=2)
-        inSec = Spinbox(self, textvariable=secs, from_=0, to=59, width=3, font = ('arial', 14, 'bold'))
-        inSec.grid(row=2, column=3)
-        self.startBtn = Button(self, text="Set Alarm", command=lambda : self.setalarm(inHrs, inMin ,inSec), bg="DodgerBlue2", fg="white", font = ('arial', 12))
+        self.inHrs = Spinbox(self, textvariable=hrs,from_=0,to=23, width=3, font = ('arial', 14, 'bold'))
+        self.inHrs.grid(row=2, column=1)
+        self.inMin = Spinbox(self, textvariable=mins, from_=0, to=59, width=3, font = ('arial', 14, 'bold'))
+        self.inMin.grid(row=2, column=2)
+        self.inSec = Spinbox(self, textvariable=secs, from_=0, to=59, width=3, font = ('arial', 14, 'bold'))
+        self.inSec.grid(row=2, column=3)
+        self.startBtn = Button(self, text="Set Alarm", command=lambda : self.setalarm(self.inHrs, self.inMin ,self.inSec), bg="DodgerBlue2", fg="white", font = ('arial', 12))
         self.startBtn.grid(row=4, column=2)
         Button(self, text="Stop", command=lambda : self.stopAlarm(), bg="DodgerBlue2", fg="white", font = ('arial', 12)).grid(row=4, column=1)
         Button(self, text="Quit", command=lambda : quitApp(), bg="DodgerBlue2", fg="white", font = ('arial', 12)).grid(row=4, column=3)
         #self.setTime = Label(self, text='Set your wake up time!', font = ('arial', 11))
         #self.setTime.grid(row=3, column=2)
 
-        def testStatus():
-            if self.alarmclock == True:
-                print("Yes, the alarm ticking")
-            else:
-                print("No, the alarm is not ticking")
-
         def quitApp():
-            self.stopAlarm()
-            self.destroy()
+            try:
+                if self.alarmRun.is_alive():
+                    self.stopAlarm()
+                    self.destroy()
+                else:
+                    self.destroy()
+            except AttributeError:
+                self.destroy()
 
     def stopAlarm(self):
         try:
+            self.bind('<Return>', lambda e: self.setalarm(self.inHrs, self.inMin, self.inSec))
             self.startBtn["state"] = "normal"
             self.startBtn["bg"] = "DodgerBlue2"
             self.setTime["text"] = "Take a Short Nap!"
@@ -57,7 +58,11 @@ class mainWindow(tk.Tk):
         except AttributeError:
             messagebox.showwarning('Alarm',"Alarm hasn't set yet!")
 
+    def disable_shortcut(self):
+        pass
+
     def setalarm(self, hrs, mins, secs):
+        self.bind('<Return>', lambda e: self.disable_shortcut())
         self.startBtn["state"] = "disable"
         self.startBtn["bg"] = "grey"
         alarmtime=str(f"{hrs.get()}:{mins.get()}:{secs.get()}")
